@@ -1,0 +1,17 @@
+{
+  "name": "sql_library_manager-v1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "pug": "^3.0.2",
+    "sequelize": "^6.21.3",
+    "sqlite3": "^5.0.11"
+  }
+}
