@@ -12,6 +12,7 @@
   "dependencies": {
     "pug": "^3.0.2",
     "sequelize": "^6.21.3",
+    "sequelize-cli": "^6.4.1",
     "sqlite3": "^5.0.11"
   }
 }
