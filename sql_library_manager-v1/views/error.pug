@@ -1,0 +1,6 @@
+if(errors)
+  h2.errors There was an error creating the book.
+  ul.errors
+    each error in errors
+      li
+        =error.message
