@@ -2,6 +2,7 @@ var express = require('express');
 const db = require('../models');
 var router = express.Router();
 const Book = require('../models').Book;
+const { Op } = require('sequelize');
 
 function asyncHandler(cb){
   return async(req, res, next) => {
@@ -13,14 +14,6 @@ function asyncHandler(cb){
     }
   }
 }
-
-function focusInput(){
-  let fields = document.querySelectorAll("input");
-  fields.forEach(field => {
-    console.log(field)
-  });
-}
-
 
 /* GET home page. */
 router.get('/', asyncHandler(async(req, res) =>
@@ -34,23 +27,38 @@ router.get('/', asyncHandler(async(req, res) =>
 );
 
 router.get('/books', asyncHandler(async(req,res) => {
-  const books = await Book.findAll()
-  res.render('layout', {books})
+  const search = req.body.search;
+  let books = await Book.findAll()
+  const pageLength = books.length
+  const pageMax = 10;
+  const views = req.query.views
+  if(views && ((views*pageMax) <= pageMax)){
+  books = books.slice((views-1),(pageMax))
+  }
+  else if(views && ((views*pageMax) > pageMax)){
+    books=books.slice(((views*pageMax)-pageMax),((pageMax*views)))
+  }
+  else{
+    books=books.slice(0,10);
+  }
+
+  res.render('index', {books
+   ,perpage: Math.ceil(pageLength/pageMax),
+   searchValue: search
+    })
   }));
 
 router.get('/books/new', asyncHandler(async(req,res) => {
   res.render('new-book', {books:{}})
-
-  // focusInput();
 }));
 
 router.get('/books/:id', asyncHandler(async(req,res) => {
   const book = await Book.findByPk(req.params.id);
   if(book){
   res.render('update-book', {book})
-  focusInput();
+
   } else{
-    throw error;
+    res.render('page-not-found')
   }
 }));
 
@@ -69,18 +77,43 @@ router.post('/books/new', asyncHandler(async(req,res) => {
   }
 }));
 
+router.post('/books', asyncHandler(async(req,res) => {
+  const searchInput = req.body.searchEntry[0];
+  let books = await Book.findAll({
+    where: {
+      [Op.or]: 
+        { 
+          title: {
+            [Op.like]:`%${searchInput}%`
+          },
+          author: {
+            [Op.like]: `%${searchInput}%`
+          },
+          genre: {
+            [Op.like]: `%${searchInput}%`
+          },
+          year: {
+            [Op.like]: `%${searchInput}%`
+          },
+        }        
+    }// end of where clause
+   });
+   res.render('index', {books})
+}));
+
+
+
 
 //Update a book information
 router.post('/books/:id', asyncHandler(async (req, res) => {
   let book;
   try {
     book = await Book.findByPk(req.params.id);
-    console.log(book)
     if(book) {
       await book.update(req.body);
       res.redirect("/books/" + book.id);
     } else {
-      res.sendStatus(404);
+      res.render("page-not-found");
     }
   } catch (error) {
     if(error.name === "SequelizeValidationError") {

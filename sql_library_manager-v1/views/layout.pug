@@ -3,31 +3,6 @@ html
   head
     title Books
     link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+    block content
 
-h1 Books
-p
-  a.button(href='/books/new') Create New Book   
-p
-  form
-    input(
-      type="search"
-      placeholder="Search books here"
-    )
-    input(
-      type="submit"
-    )
-table
-  thead
-    tr
-      th Title
-      th Author 
-      th Genre 
-      th Year
-  tbody
-    each entry in books ? books : []
-      tr
-        td
-          a(href=`/books/${entry.id}`) #{entry.title}
-        td #{entry.author}
-        td #{entry.genre}
-        td #{entry.year}

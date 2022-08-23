@@ -1,5 +1,38 @@
 extends layout
 
 block content
-  h1= title
-  p #{title}
+    h1 Books
+    p
+      a.button(href='/books/new') Create New Book   
+    p
+      form(method="post" action=`/books`)
+        input(
+          type="search"
+          id="searchInput"
+          name="searchEntry"
+          placeholder="Search books here"
+        )
+        input(
+        type="submit"
+        name="searchEntry"
+        id="searchInput"
+        )
+    table
+      thead
+        tr
+          th Title
+          th Author 
+          th Genre 
+          th Year
+      tbody
+        each entry in books ? books : []
+          tr
+            td
+              a(href=`/books/${entry.id}`) #{entry.title}
+            td #{entry.author}
+            td #{entry.genre}
+            td #{entry.year}
+    - var n = 1
+    p
+      while n <= `${perpage}`
+        a.button(href=`/books?views=${n}` id="pagination")=n++
