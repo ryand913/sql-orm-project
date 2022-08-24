@@ -19,9 +19,6 @@ function asyncHandler(cb){
 router.get('/', asyncHandler(async(req, res) =>
 {
       res.redirect("/books");
-      const books = await Book.findAll();
-      console.log(books);
-      res.json(books);
 }
   )
 );
@@ -52,13 +49,14 @@ router.get('/books/new', asyncHandler(async(req,res) => {
   res.render('new-book', {books:{}})
 }));
 
-router.get('/books/:id', asyncHandler(async(req,res) => {
+router.get('/books/:id', asyncHandler(async(req,res,next) => {
   const book = await Book.findByPk(req.params.id);
   if(book){
   res.render('update-book', {book})
-
   } else{
-    res.render('page-not-found')
+    const err = new Error("The book you've searched for does not exist!")
+    err.status = 404;
+    next(err);
   }
 }));
 

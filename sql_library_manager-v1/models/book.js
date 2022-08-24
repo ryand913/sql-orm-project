@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
         validate: {
           notEmpty:{
-        msg: "You must enter a title to create an entry."
+        msg: "Please provide a title."
       }
     }},
     author: {
@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
         validate: {
           notEmpty:{
-        msg: "You must enter an author to create an entry."
+        msg: "Please provide an author."
       }
     }},
     genre: DataTypes.STRING,
