@@ -41,7 +41,7 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use((req,res,next) => {
-  const err = new Error('Not Found');
+  const err = new Error('The page you are looking for does not exist.');
   err.status = 404;
   next(err);
 });
@@ -51,9 +51,9 @@ app.use((req,res,next) => {
 app.use((err,req,res,next) => {
   res.locals.error = err;
   if (err.status === 404)
-  res.render('page-not-found', {title:"Page Not Found", error: err});
+  res.render('page-not-found', {title:"Page Not Found", error: err.message});
   else
-  res.status(500).render('error');
+  res.status(500).render('error', {title: "Unhandled error", errors: err});
   console.dir(err.status + " " + err.message);
 });
 
